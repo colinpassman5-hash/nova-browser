@@ -5,97 +5,135 @@
 <title>NOVA</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  background: #050505;
-  color: #eaeaea;
+  background: radial-gradient(circle at 50% 20%, #0a0f1f, #020308 70%);
+  color: #e6f0ff;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  overflow: hidden;
 }
 
-#container {
-  flex: 1;
+/* Ambient glow */
+body::before {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0,120,255,0.15), transparent 70%);
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: blur(80px);
+}
+
+/* Container */
+#app {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  max-width: 700px;
+  height: 100%;
+  max-width: 800px;
   margin: auto;
   width: 90%;
 }
 
+/* Header */
+#header {
+  padding: 20px 0;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: rgba(180,200,255,0.6);
+}
+
+/* Conversation */
 #conversation {
   flex: 1;
   overflow-y: auto;
-  padding-top: 40px;
+  padding: 20px 0;
 }
 
+/* Messages */
 .message {
-  margin: 12px 0;
-  line-height: 1.5;
+  margin: 14px 0;
+  line-height: 1.6;
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(8px);
   animation: fadeIn 0.4s ease forwards;
 }
 
 .user {
-  color: #888;
+  color: rgba(180,200,255,0.5);
 }
 
 .nova {
   color: #ffffff;
+  text-shadow: 0 0 8px rgba(0,120,255,0.3);
 }
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Input */
 #inputBar {
   display: flex;
   margin: 20px 0;
+  gap: 10px;
 }
 
 input {
   flex: 1;
-  padding: 14px;
-  border-radius: 10px;
-  border: none;
-  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(10,15,30,0.6);
+  backdrop-filter: blur(10px);
   color: white;
   outline: none;
 }
 
-button {
-  margin-left: 10px;
-  padding: 14px 18px;
-  border-radius: 10px;
-  border: none;
-  background: white;
-  color: black;
-  cursor: pointer;
+input:focus {
+  border: 1px solid rgba(0,120,255,0.6);
+  box-shadow: 0 0 12px rgba(0,120,255,0.3);
 }
 
+button {
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #0070ff, #00c6ff);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(0,120,255,0.4);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 
 <body>
 
-<div id="container">
+<div id="app">
+  <div id="header">NOVA SYSTEM</div>
+
   <div id="conversation"></div>
 
   <div id="inputBar">
-    <input id="input" placeholder="Talk to Nova..." />
+    <input id="input" placeholder="Speak freely..." />
     <button onclick="send()">→</button>
   </div>
 </div>
 
 <script>
-
-let hasStarted = false;
 
 function addMessage(text, type) {
   const div = document.createElement("div");
@@ -105,15 +143,11 @@ function addMessage(text, type) {
   div.scrollIntoView({ behavior: "smooth" });
 }
 
-function initialPresence() {
-  setTimeout(() => addMessage("Hey.", "nova"), 400);
-  setTimeout(() => addMessage("I'm here.", "nova"), 1200);
-  setTimeout(() => addMessage("You don’t need to explain everything perfectly.", "nova"), 2200);
-  setTimeout(() => addMessage("Just start where your head is at.", "nova"), 3200);
-}
+// === PRESENCE (clean, not cringe) ===
+setTimeout(() => addMessage("Nova online.", "nova"), 400);
+setTimeout(() => addMessage("I'm here with you.", "nova"), 1200);
 
-initialPresence();
-
+// === SEND ===
 async function send() {
   const input = document.getElementById("input");
   const text = input.value.trim();
@@ -130,7 +164,7 @@ async function send() {
 
   const data = await res.json();
 
-  setTimeout(() => addMessage(data.reply, "nova"), 600);
+  setTimeout(() => addMessage(data.reply, "nova"), 500);
 }
 
 </script>
