@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NOVA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      width: 90%;
+      max-width: 500px;
+    }
+    textarea, input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      background: white;
+      color: black;
+      font-weight: bold;
+      border: none;
+    }
+    .response {
+      margin-top: 20px;
+      opacity: 0.8;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>NOVA</h1>
+    <textarea id="goal" placeholder="What do you want to achieve?"></textarea>
+    <input id="constraints" placeholder="Constraints (optional)" />
+    <button onclick="runNova()">Execute</button>
+    <div class="response" id="response"></div>
+  </div>
+
+  <script>
+    async function runNova() {
+      const goal = document.getElementById('goal').value;
+      const constraints = document.getElementById('constraints').value;
+
+      const res = await fetch('/api/nova', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal, constraints })
+      });
+
+      const data = await res.json();
+      document.getElementById('response').innerText =
+        data.message + "\\n" + data.next;
+    }
+  </script>
+</body>
+</html>
