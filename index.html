@@ -1,1017 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
-  />
-  <title>NOVA</title>
-  <style>
-    :root {
-      --bg-0: #03060d;
-      --bg-1: #07101d;
-      --bg-2: #0d1a2e;
-      --panel: rgba(10, 18, 32, 0.58);
-      --panel-2: rgba(255, 255, 255, 0.045);
-      --line: rgba(255, 255, 255, 0.09);
-      --text: #eef4ff;
-      --muted: rgba(222, 232, 255, 0.62);
-      --soft: rgba(222, 232, 255, 0.38);
-      --accent: #7ed0ff;
-      --accent-2: #6a7cff;
-      --accent-3: #9cf5d3;
-      --danger: #ff8a8a;
-      --shadow: 0 24px 120px rgba(0, 0, 0, 0.52);
-      --radius-xl: 30px;
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --blur: 20px;
-      --max: 1200px;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 18% 20%, rgba(126, 208, 255, 0.16), transparent 24%),
-        radial-gradient(circle at 82% 18%, rgba(106, 124, 255, 0.17), transparent 23%),
-        radial-gradient(circle at 50% 72%, rgba(156, 245, 211, 0.08), transparent 26%),
-        linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 36%, var(--bg-0) 100%);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-    }
-
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      inset: -20%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    body::before {
-      background:
-        conic-gradient(from 210deg at 50% 50%, rgba(126, 208, 255, 0.05), rgba(106, 124, 255, 0.08), rgba(156, 245, 211, 0.05), rgba(126, 208, 255, 0.05));
-      filter: blur(90px);
-      animation: auraSpin 32s linear infinite;
-      opacity: 0.9;
-    }
-
-    body::after {
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 56px 56px;
-      mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
-      opacity: 0.22;
-    }
-
-    @keyframes auraSpin {
-      from { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.04); }
-      to { transform: rotate(360deg) scale(1); }
-    }
-
-    #app {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      padding: 22px;
-    }
-
-    .shell {
-      position: relative;
-      width: min(100%, var(--max));
-      height: min(94vh, 900px);
-      border-radius: 34px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
-        rgba(6, 10, 18, 0.58);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      backdrop-filter: blur(var(--blur)) saturate(140%);
-      -webkit-backdrop-filter: blur(var(--blur)) saturate(140%);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.06),
-        inset 0 -1px 0 rgba(255,255,255,0.03),
-        var(--shadow);
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 360px 1fr;
-    }
-
-    .shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 18% 14%, rgba(126,208,255,0.14), transparent 18%),
-        radial-gradient(circle at 78% 20%, rgba(106,124,255,0.12), transparent 20%);
-      opacity: 0.95;
-    }
-
-    .sidebar {
-      position: relative;
-      padding: 28px 24px 24px;
-      border-right: 1px solid rgba(255,255,255,0.07);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .wordmark {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-
-    .halo {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(126,208,255,0.5) 20%, rgba(106,124,255,0.24) 42%, transparent 70%);
-      box-shadow:
-        0 0 30px rgba(126,208,255,0.18),
-        0 0 80px rgba(106,124,255,0.12);
-      position: relative;
-      overflow: hidden;
-      flex: 0 0 auto;
-    }
-
-    .halo::after {
-      content: "";
-      position: absolute;
-      inset: 8px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.18);
-      opacity: 0.75;
-    }
-
-    .brand {
-      min-width: 0;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 21px;
-      letter-spacing: 0.28em;
-      font-weight: 700;
-    }
-
-    .brand p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .presence {
-      margin-top: 6px;
-      padding: 16px;
-      border-radius: 20px;
-      background: var(--panel-2);
-      border: 1px solid rgba(255,255,255,0.07);
-      min-height: 146px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .presence-label {
-      color: var(--soft);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .presence-copy {
-      font-size: 26px;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      font-weight: 600;
-      min-height: 62px;
-    }
-
-    .presence-sub {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.45;
-      min-height: 42px;
-    }
-
-    .meta-grid {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .meta-card {
-      border-radius: 18px;
-      padding: 14px 14px 15px;
-      background: rgba(255,255,255,0.032);
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-
-    .meta-label {
-      color: var(--soft);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    .meta-value {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.4;
-    }
-
-    .meta-value strong {
-      display: block;
-      font-size: 20px;
-      line-height: 1;
-      margin-bottom: 6px;
-      font-weight: 700;
-      letter-spacing: -0.04em;
-    }
-
-    .suggestions {
-      margin-top: auto;
-      padding-top: 18px;
-    }
-
-    .suggestions h2 {
-      margin: 0 0 12px;
-      color: var(--soft);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-
-    .chip-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .chip {
-      appearance: none;
-      border: 1px solid rgba(255,255,255,0.09);
-      background: rgba(255,255,255,0.035);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 11px 14px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
-    }
-
-    .chip:hover {
-      transform: translateY(-1px);
-      border-color: rgba(126,208,255,0.35);
-      background: rgba(126,208,255,0.09);
-    }
-
-    .main {
-      position: relative;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      min-width: 0;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 24px 26px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
-    }
-
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff, var(--accent-3));
-      box-shadow: 0 0 18px rgba(156,245,211,0.45);
-      flex: 0 0 auto;
-    }
-
-    .status-copy {
-      min-width: 0;
-    }
-
-    .status-copy strong {
-      display: block;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    .status-copy span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 3px;
-    }
-
-    .session-badge {
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.07);
-      color: var(--muted);
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .feed {
-      position: relative;
-      min-height: 0;
-      overflow: auto;
-      padding: 28px 26px 16px;
-      scroll-behavior: smooth;
-    }
-
-    .feed-inner {
-      width: min(100%, 760px);
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding-bottom: 24px;
-    }
-
-    .message {
-      position: relative;
-      max-width: min(88%, 720px);
-      border-radius: 24px;
-      padding: 18px 20px;
-      border: 1px solid rgba(255,255,255,0.07);
-      line-height: 1.55;
-      animation: rise 280ms ease;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .message.nova {
-      align-self: flex-start;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02)),
-        rgba(8, 14, 26, 0.58);
-    }
-
-    .message.user {
-      align-self: flex-end;
-      background:
-        linear-gradient(180deg, rgba(126,208,255,0.16), rgba(106,124,255,0.09)),
-        rgba(18, 24, 42, 0.75);
-      border-color: rgba(126,208,255,0.16);
-    }
-
-    .message.system {
-      align-self: center;
-      background: transparent;
-      border: none;
-      padding: 0;
-      color: var(--soft);
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      max-width: 100%;
-      box-shadow: none;
-    }
-
-    .message-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .message-role {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--soft);
-    }
-
-    .message-time {
-      font-size: 11px;
-      color: var(--soft);
-    }
-
-    .message-body {
-      font-size: 15px;
-    }
-
-    .composer-wrap {
-      padding: 0 26px 26px;
-      border-top: 1px solid rgba(255,255,255,0.07);
-      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.02));
-    }
-
-    .composer {
-      width: min(100%, 760px);
-      margin: 18px auto 0;
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025)),
-        rgba(7, 12, 22, 0.78);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.04),
-        0 18px 50px rgba(0,0,0,0.32);
-      overflow: hidden;
-    }
-
-    .composer-top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 14px;
-      padding: 18px 18px 10px;
-      align-items: end;
-    }
-
-    .input-shell {
-      position: relative;
-      min-width: 0;
-    }
-
-    textarea {
-      display: block;
-      width: 100%;
-      min-height: 72px;
-      max-height: 220px;
-      resize: none;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: var(--text);
-      font: inherit;
-      font-size: 18px;
-      line-height: 1.45;
-      letter-spacing: -0.02em;
-      padding: 0;
-    }
-
-    textarea::placeholder {
-      color: rgba(222, 232, 255, 0.42);
-    }
-
-    .send {
-      appearance: none;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      align-self: end;
-      width: 56px;
-      height: 56px;
-      border-radius: 18px;
-      color: white;
-      background:
-        linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow:
-        0 10px 28px rgba(106,124,255,0.32),
-        inset 0 1px 0 rgba(255,255,255,0.28);
-      transition: transform 140ms ease, filter 140ms ease, opacity 140ms ease;
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .send:hover {
-      transform: translateY(-1px) scale(1.01);
-      filter: brightness(1.05);
-    }
-
-    .send:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-      filter: none;
-    }
-
-    .composer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 0 18px 16px;
-      color: var(--soft);
-      font-size: 12px;
-    }
-
-    .composer-status {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .composer-pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-3));
-      box-shadow: 0 0 12px rgba(126,208,255,0.45);
-    }
-
-    .hint {
-      white-space: nowrap;
-    }
-
-    .typing {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .typing span {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.7);
-      animation: blink 1s infinite ease-in-out;
-    }
-
-    .typing span:nth-child(2) { animation-delay: 120ms; }
-    .typing span:nth-child(3) { animation-delay: 240ms; }
-
-    @keyframes blink {
-      0%, 80%, 100% { transform: scale(0.75); opacity: 0.35; }
-      40% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(8px) scale(0.995);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .danger {
-      color: var(--danger);
-    }
-
-    @media (max-width: 1040px) {
-      .shell {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        display: none;
-      }
-    }
-
-    @media (max-width: 640px) {
-      #app {
-        padding: 0;
-      }
-
-      .shell {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-        border: none;
-      }
-
-      .topbar {
-        padding: 18px 16px 14px;
-      }
-
-      .feed {
-        padding: 20px 16px 12px;
-      }
-
-      .composer-wrap {
-        padding: 0 16px 16px;
-      }
-
-      .composer-top {
-        grid-template-columns: 1fr;
-      }
-
-      .send {
-        width: 100%;
-        height: 52px;
-        border-radius: 16px;
-      }
-
-      textarea {
-        min-height: 96px;
-        font-size: 17px;
-      }
-
-      .session-badge {
-        display: none;
-      }
-
-      .message {
-        max-width: 100%;
-      }
-    }
-  </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NOVA</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: #05070d;
+  color: white;
+  font-family: -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+#feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.message {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.user { opacity: 0.6; }
+.nova { opacity: 1; }
+
+#inputBar {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #222;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #111;
+  color: white;
+}
+
+button {
+  margin-left: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: white;
+  color: black;
+}
+</style>
 </head>
+
 <body>
-  <div id="app">
-    <div class="shell" id="shell">
-      <aside class="sidebar">
-        <div class="wordmark">
-          <div class="halo"></div>
-          <div class="brand">
-            <h1>NOVA</h1>
-            <p>Intelligence Surface</p>
-          </div>
-        </div>
 
-        <section class="presence">
-          <div class="presence-label">Presence</div>
-          <div class="presence-copy" id="presenceCopy">Online.</div>
-          <div class="presence-sub" id="presenceSub">
-            Enter naturally. Nova will meet you where you are and move with precision.
-          </div>
-        </section>
+<div id="feed"></div>
 
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-label">Mode</div>
-            <div class="meta-value"><strong id="modeValue">Companion</strong>Adaptive first contact</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Session</div>
-            <div class="meta-value"><strong id="messageCount">0</strong>Captured exchanges</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Flow</div>
-            <div class="meta-value"><strong id="flowValue">Listening</strong>Responds with control</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Logging</div>
-            <div class="meta-value"><strong>Live</strong>Telemetry enabled</div>
-          </div>
-        </div>
+<div id="inputBar">
+  <input id="input" placeholder="Talk to Nova..." />
+  <button onclick="send()">→</button>
+</div>
 
-        <section class="suggestions">
-          <h2>Fast entry</h2>
-          <div class="chip-list">
-            <button class="chip" data-seed="I want Nova to help me build something extraordinary.">Build with me</button>
-            <button class="chip" data-seed="Show me what Nova actually is.">What are you?</button>
-            <button class="chip" data-seed="I have a goal, but my thinking is messy right now.">Untangle my thinking</button>
-            <button class="chip" data-seed="I want clarity before I move.">Give me clarity</button>
-          </div>
-        </section>
-      </aside>
+<script>
 
-      <main class="main">
-        <header class="topbar">
-          <div class="topbar-left">
-            <div class="status-dot"></div>
-            <div class="status-copy">
-              <strong id="headerTitle">Nova is live</strong>
-              <span id="headerSub">Calm. Precise. Ready.</span>
-            </div>
-          </div>
-          <div class="session-badge" id="sessionBadge">Session initializing…</div>
-        </header>
+const feed = document.getElementById("feed");
+const input = document.getElementById("input");
 
-        <section class="feed" id="feed">
-          <div class="feed-inner" id="feedInner"></div>
-        </section>
+function add(text, cls) {
+  const div = document.createElement("div");
+  div.className = "message " + cls;
+  div.innerText = text;
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+}
 
-        <div class="composer-wrap">
-          <div class="composer">
-            <div class="composer-top">
-              <div class="input-shell">
-                <textarea
-                  id="input"
-                  rows="1"
-                  placeholder="Start wherever your head is at."
-                  autocomplete="off"
-                  spellcheck="false"
-                ></textarea>
-              </div>
-              <button class="send" id="send" aria-label="Send">↑</button>
-            </div>
-            <div class="composer-bottom">
-              <div class="composer-status">
-                <div class="composer-pulse"></div>
-                <div id="composerState">Presence active</div>
-              </div>
-              <div class="hint" id="composerHint">Enter to send · Shift+Enter for a new line</div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  </div>
+add("Nova online.", "nova");
 
-  <script>
-    const state = {
-      sessionId: cryptoRandom(),
-      startedAt: new Date(),
-      messages: [],
-      detected: false,
-      phase: "welcome",
-      busy: false
-    };
+async function send() {
+  const text = input.value.trim();
+  if (!text) return;
 
-    const input = document.getElementById("input");
-    const send = document.getElementById("send");
-    const feedInner = document.getElementById("feedInner");
-    const feed = document.getElementById("feed");
-    const presenceCopy = document.getElementById("presenceCopy");
-    const presenceSub = document.getElementById("presenceSub");
-    const modeValue = document.getElementById("modeValue");
-    const messageCount = document.getElementById("messageCount");
-    const flowValue = document.getElementById("flowValue");
-    const headerTitle = document.getElementById("headerTitle");
-    const headerSub = document.getElementById("headerSub");
-    const sessionBadge = document.getElementById("sessionBadge");
-    const composerState = document.getElementById("composerState");
-    const shell = document.getElementById("shell");
+  add("> " + text, "user");
+  input.value = "";
 
-    function cryptoRandom() {
-      if (window.crypto && crypto.getRandomValues) {
-        const arr = new Uint32Array(2);
-        crypto.getRandomValues(arr);
-        return Array.from(arr).map(n => n.toString(16)).join("");
-      }
-      return String(Date.now()) + Math.random().toString(16).slice(2);
-    }
-
-    function nowTime() {
-      return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    }
-
-    function autoGrow() {
-      input.style.height = "auto";
-      input.style.height = Math.min(input.scrollHeight, 220) + "px";
-    }
-
-    function scrollBottom() {
-      requestAnimationFrame(() => {
-        feed.scrollTop = feed.scrollHeight;
-      });
-    }
-
-    function updateMetrics() {
-      messageCount.textContent = String(state.messages.length);
-      sessionBadge.textContent = "Session " + state.sessionId.slice(0, 8).toUpperCase();
-    }
-
-    function setPresence(title, sub, mode, flow) {
-      if (title) presenceCopy.textContent = title;
-      if (sub) presenceSub.textContent = sub;
-      if (mode) modeValue.textContent = mode;
-      if (flow) flowValue.textContent = flow;
-    }
-
-    function setHeader(title, sub) {
-      headerTitle.textContent = title;
-      headerSub.textContent = sub;
-    }
-
-    function setComposer(text) {
-      composerState.textContent = text;
-    }
-
-    function addSystem(text) {
-      const el = document.createElement("div");
-      el.className = "message system";
-      el.textContent = text;
-      feedInner.appendChild(el);
-      scrollBottom();
-    }
-
-    function addMessage(role, text) {
-      const wrap = document.createElement("article");
-      wrap.className = "message " + role;
-
-      const head = document.createElement("div");
-      head.className = "message-head";
-
-      const roleEl = document.createElement("div");
-      roleEl.className = "message-role";
-      roleEl.textContent = role === "nova" ? "Nova" : "You";
-
-      const timeEl = document.createElement("div");
-      timeEl.className = "message-time";
-      timeEl.textContent = nowTime();
-
-      const body = document.createElement("div");
-      body.className = "message-body";
-      body.textContent = text;
-
-      head.appendChild(roleEl);
-      head.appendChild(timeEl);
-      wrap.appendChild(head);
-      wrap.appendChild(body);
-      feedInner.appendChild(wrap);
-
-      state.messages.push({ role, text, time: new Date().toISOString() });
-      updateMetrics();
-      scrollBottom();
-    }
-
-    function addTyping() {
-      const wrap = document.createElement("article");
-      wrap.className = "message nova";
-      wrap.id = "typingIndicator";
-
-      const head = document.createElement("div");
-      head.className = "message-head";
-
-      const roleEl = document.createElement("div");
-      roleEl.className = "message-role";
-      roleEl.textContent = "Nova";
-
-      const timeEl = document.createElement("div");
-      timeEl.className = "message-time";
-      timeEl.textContent = nowTime();
-
-      const body = document.createElement("div");
-      body.className = "message-body";
-      body.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
-
-      head.appendChild(roleEl);
-      head.appendChild(timeEl);
-      wrap.appendChild(head);
-      wrap.appendChild(body);
-      feedInner.appendChild(wrap);
-      scrollBottom();
-    }
-
-    function removeTyping() {
-      const typing = document.getElementById("typingIndicator");
-      if (typing) typing.remove();
-    }
-
-    async function stagedWelcome() {
-      addSystem("Presence detected");
-      await wait(240);
-
-      addMessage("nova", "Hey.");
-      setPresence("Present.", "You do not need to be polished to begin. Nova can meet the unfinished version of the thought.", "Companion", "Observing");
-      setHeader("Nova has you", "No performance required.");
-      await wait(420);
-
-      addMessage("nova", "You’re not entering a form. You’re entering a live intelligence surface.");
-      setPresence("Online.", "This space is built to receive raw thought, pressure, ambition, uncertainty, and move with all of it.", "Companion", "Listening");
-      await wait(520);
-
-      addMessage("nova", "Start wherever your head is at.");
-      state.phase = "live";
-      setHeader("Speak naturally", "Nova will pick up the structure.");
-      setComposer("Ready");
-      input.focus();
-    }
-
-    async function submit() {
-      const text = input.value.trim();
-      if (!text || state.busy) return;
-
-      state.detected = true;
-      state.busy = true;
-      send.disabled = true;
-      addMessage("user", text);
-      input.value = "";
-      autoGrow();
-
-      setComposer("Processing");
-      setPresence("Tracking.", "Reading intent, pressure, clarity, resistance, and direction.", "Operator", "Processing");
-      setHeader("Nova is thinking", "Tracking your direction.");
-      addTyping();
-
-      try {
-        const payload = {
-          sessionId: state.sessionId,
-          message: text,
-          history: state.messages.slice(-8)
-        };
-
-        const res = await fetch("/api/nova", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-        removeTyping();
-
-        if (!res.ok) {
-          throw new Error(data && data.error ? data.error : "Request failed");
-        }
-
-        addMessage("nova", data.reply || "I’m here. Keep going.");
-        setPresence(
-          data.uiTitle || "Engaged.",
-          data.uiSub || "Nova is holding the thread and moving with you.",
-          data.mode || "Operator",
-          data.flow || "Responsive"
-        );
-        setHeader(
-          data.headerTitle || "Nova engaged",
-          data.headerSub || "Holding context."
-        );
-        setComposer("Ready");
-      } catch (err) {
-        removeTyping();
-        addMessage("nova", "Something broke in transit. The session is still intact. Send that again.");
-        setPresence("Interrupted.", "Signal dropped. The session is still live.", "Recovery", "Recovering");
-        setHeader("Temporary break", "Retry immediately.");
-        setComposer("Retry");
-      } finally {
-        state.busy = false;
-        send.disabled = false;
-        input.focus();
-      }
-    }
-
-    function wait(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    document.querySelectorAll(".chip").forEach(btn => {
-      btn.addEventListener("click", () => {
-        input.value = btn.dataset.seed || "";
-        autoGrow();
-        input.focus();
-      });
+  try {
+    const res = await fetch("/api/nova", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
     });
 
-    input.addEventListener("input", autoGrow);
+    const data = await res.json();
 
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        submit();
-      }
-    });
+    add(data.reply || "No response.", "nova");
 
-    send.addEventListener("click", submit);
+  } catch (err) {
+    add("Connection error. Try again.", "nova");
+  }
+}
 
-    let moved = false;
-    function detectPresence() {
-      if (moved) return;
-      moved = true;
-      stagedWelcome();
-      window.removeEventListener("pointermove", detectPresence);
-      window.removeEventListener("keydown", detectPresence);
-      window.removeEventListener("touchstart", detectPresence);
-    }
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") send();
+});
 
-    window.addEventListener("pointermove", detectPresence, { once: true });
-    window.addEventListener("keydown", detectPresence, { once: true });
-    window.addEventListener("touchstart", detectPresence, { once: true });
+</script>
 
-    document.addEventListener("pointermove", (e) => {
-      const rect = shell.getBoundingClientRect();
-      const rx = ((e.clientY - rect.top) / rect.height - 0.5) * -3;
-      const ry = ((e.clientX - rect.left) / rect.width - 0.5) * 4;
-      shell.style.transform = "perspective(1800px) rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
-    });
-
-    document.addEventListener("pointerleave", () => {
-      shell.style.transform = "perspective(1800px) rotateX(0deg) rotateY(0deg)";
-    });
-
-    updateMetrics();
-    autoGrow();
-    setComposer("Presence active");
-  </script>
 </body>
 </html>
