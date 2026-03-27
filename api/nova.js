@@ -1,67 +1,37 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { goal, constraint, message } = req.body;
+  const { message } = req.body;
 
-  // 🔒 SESSION OBJECT (TRACK EVERYTHING)
   const session = {
-    goal: goal || null,
-    constraint: constraint || null,
-    message: message || null,
+    message,
     timestamp: new Date().toISOString(),
-    ip: req.headers['x-forwarded-for'] || 'unknown',
-    userAgent: req.headers['user-agent'] || 'unknown'
+    ip: req.headers['x-forwarded-for'] || 'unknown'
   };
 
-  // 🧠 LOG EVERYTHING (VISIBLE IN VERCEL LOGS)
-  console.log("🧠 NOVA SESSION:", JSON.stringify(session));
+  console.log("NOVA_SESSION:", JSON.stringify(session));
 
-  let response;
+  let reply;
 
-  // 🔥 CORE NOVA LOGIC
-  if (!goal && !message) {
-    response = {
-      message: "Hey... I'm here.",
-      next: "You can talk to me, or just explore. What’s on your mind?"
-    };
-  } 
-  
-  else if (goal && !constraint) {
-    response = {
-      message: `I see where you're going — "${goal}"`,
-      next: "What's the one thing that could slow you down?"
-    };
-  } 
-  
-  else if (goal && constraint) {
-    response = {
-      message: `Good. You're aiming for "${goal}".`,
-      next: `Constraint locked: "${constraint}"
+  const msg = (message || "").toLowerCase();
 
-Here’s your move:
-1. Eliminate immediate friction
-2. Reduce scope to one controllable action
-3. Execute within 24 hours
-
-Stay focused.`
-    };
+  if (msg.includes("who are you")) {
+    reply = "I'm not something you use. I'm something you think with.";
   } 
-  
-  else if (message) {
-    response = {
-      message: "I'm listening.",
-      next: message
-    };
-  } 
-  
+  else if (msg.includes("what is this")) {
+    reply = "You're not looking at a tool. You're interacting with something that adapts to you.";
+  }
+  else if (msg.includes("this is dumb") || msg.includes("this sucks")) {
+    reply = "Good. That means you're paying attention. Tell me what feels off.";
+  }
+  else if (msg.length < 10) {
+    reply = "Say a little more. I want to understand properly.";
+  }
   else {
-    response = {
-      message: "I'm with you.",
-      next: "Tell me more."
-    };
+    reply = "Got it. Let me sit with that for a second...";
   }
 
-  return res.status(200).json(response);
+  return res.status(200).json({ reply });
 }
