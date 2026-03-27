@@ -3,24 +3,32 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { goal, constraints } = req.body;
-
-  if (!goal) {
-    return res.status(400).json({ error: 'Goal required' });
-  }
+  const { goal, constraint, message } = req.body;
 
   const session = {
-    goal,
-    constraints,
-    timestamp: new Date().toISOString()
+    goal: goal || null,
+    constraint: constraint || null,
+    message: message || null,
+    timestamp: new Date().toISOString(),
+    ip: req.headers['x-forwarded-for'] || 'unknown'
   };
 
-  console.log('NOVA SESSION:', session);
+  // 🔴 DATA LOGGING (REPLACE WITH DB LATER — CURRENTLY LOGGING TO VERCEL)
+  console.log("NOVA_SESSION:", JSON.stringify(session));
 
-  const response = {
-    message: `NOVA engaged. Processing goal: ${goal}`,
-    next: 'Breaking this into executable steps...'
-  };
+  let response;
+
+  if (goal && constraint) {
+    response = {
+      message: `Understood. You're aiming for "${goal}".`,
+      next: `Primary constraint identified: "${constraint}".\n\nStart here:\n1. Remove immediate friction\n2. Create a fast feedback loop\n3. Execute one controlled test today`
+    };
+  } else {
+    response = {
+      message: "I'm with you.",
+      next: "Tell me more about what you're trying to do."
+    };
+  }
 
   return res.status(200).json(response);
 }
