@@ -5,28 +5,61 @@ export default async function handler(req, res) {
 
   const { goal, constraint, message } = req.body;
 
+  // 🔒 SESSION OBJECT (TRACK EVERYTHING)
   const session = {
     goal: goal || null,
     constraint: constraint || null,
     message: message || null,
     timestamp: new Date().toISOString(),
-    ip: req.headers['x-forwarded-for'] || 'unknown'
+    ip: req.headers['x-forwarded-for'] || 'unknown',
+    userAgent: req.headers['user-agent'] || 'unknown'
   };
 
-  // 🔴 DATA LOGGING (REPLACE WITH DB LATER — CURRENTLY LOGGING TO VERCEL)
-  console.log("NOVA_SESSION:", JSON.stringify(session));
+  // 🧠 LOG EVERYTHING (VISIBLE IN VERCEL LOGS)
+  console.log("🧠 NOVA SESSION:", JSON.stringify(session));
 
   let response;
 
-  if (goal && constraint) {
+  // 🔥 CORE NOVA LOGIC
+  if (!goal && !message) {
     response = {
-      message: `Understood. You're aiming for "${goal}".`,
-      next: `Primary constraint identified: "${constraint}".\n\nStart here:\n1. Remove immediate friction\n2. Create a fast feedback loop\n3. Execute one controlled test today`
+      message: "Hey... I'm here.",
+      next: "You can talk to me, or just explore. What’s on your mind?"
     };
-  } else {
+  } 
+  
+  else if (goal && !constraint) {
+    response = {
+      message: `I see where you're going — "${goal}"`,
+      next: "What's the one thing that could slow you down?"
+    };
+  } 
+  
+  else if (goal && constraint) {
+    response = {
+      message: `Good. You're aiming for "${goal}".`,
+      next: `Constraint locked: "${constraint}"
+
+Here’s your move:
+1. Eliminate immediate friction
+2. Reduce scope to one controllable action
+3. Execute within 24 hours
+
+Stay focused.`
+    };
+  } 
+  
+  else if (message) {
+    response = {
+      message: "I'm listening.",
+      next: message
+    };
+  } 
+  
+  else {
     response = {
       message: "I'm with you.",
-      next: "Tell me more about what you're trying to do."
+      next: "Tell me more."
     };
   }
 
