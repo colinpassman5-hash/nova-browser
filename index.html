@@ -1,205 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NOVA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; }
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NOVA</title>
 
-    body {
-      margin: 0;
-      height: 100vh;
-      background: #000;
-      color: white;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+<style>
+body {
+  margin: 0;
+  background: #050505;
+  color: #eaeaea;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
-    .container {
-      width: 90%;
-      max-width: 640px;
-    }
+#container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  max-width: 700px;
+  margin: auto;
+  width: 90%;
+}
 
-    .log {
-      font-size: 18px;
-      line-height: 1.7;
-      min-height: 160px;
-    }
+#conversation {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 40px;
+}
 
-    .line {
-      margin-bottom: 8px;
-      opacity: 0.9;
-    }
+.message {
+  margin: 12px 0;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 0.4s ease forwards;
+}
 
-    .user {
-      opacity: 0.5;
-    }
+.user {
+  color: #888;
+}
 
-    .input-row {
-      margin-top: 25px;
-      display: flex;
-      gap: 10px;
-    }
+.nova {
+  color: #ffffff;
+}
 
-    input {
-      flex: 1;
-      padding: 16px;
-      border-radius: 12px;
-      border: none;
-      background: #111;
-      color: white;
-      font-size: 16px;
-      outline: none;
-    }
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-    button {
-      padding: 16px 20px;
-      border-radius: 12px;
-      border: none;
-      background: white;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
+#inputBar {
+  display: flex;
+  margin: 20px 0;
+}
 
-    .cursor {
-      display: inline-block;
-      width: 8px;
-      height: 18px;
-      background: white;
-      margin-left: 4px;
-      animation: blink 1s infinite;
-    }
+input {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #111;
+  color: white;
+  outline: none;
+}
 
-    @keyframes blink {
-      0%,100% { opacity:1; }
-      50% { opacity:0; }
-    }
-  </style>
+button {
+  margin-left: 10px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: none;
+  background: white;
+  color: black;
+  cursor: pointer;
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="container">
-  <div class="log" id="log"></div>
+<div id="container">
+  <div id="conversation"></div>
 
-  <div class="input-row">
+  <div id="inputBar">
     <input id="input" placeholder="Talk to Nova..." />
     <button onclick="send()">→</button>
   </div>
 </div>
 
 <script>
-const log = document.getElementById('log');
-const input = document.getElementById('input');
 
-let state = {
-  goal: null,
-  constraint: null,
-  phase: "intro"
-};
+let hasStarted = false;
 
-function type(text, speed = 16) {
-  return new Promise(resolve => {
-    let i = 0;
-    const el = document.createElement('div');
-    el.className = "line";
-    log.appendChild(el);
-
-    function tick() {
-      if (i < text.length) {
-        el.innerHTML = text.slice(0, i + 1) + '<span class="cursor"></span>';
-        i++;
-        setTimeout(tick, speed);
-      } else {
-        el.innerHTML = text;
-        resolve();
-      }
-    }
-
-    tick();
-  });
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "message " + type;
+  div.innerText = text;
+  document.getElementById("conversation").appendChild(div);
+  div.scrollIntoView({ behavior: "smooth" });
 }
 
-function addUser(text) {
-  const el = document.createElement('div');
-  el.className = "line user";
-  el.innerText = "> " + text;
-  log.appendChild(el);
+function initialPresence() {
+  setTimeout(() => addMessage("Hey.", "nova"), 400);
+  setTimeout(() => addMessage("I'm here.", "nova"), 1200);
+  setTimeout(() => addMessage("You don’t need to explain everything perfectly.", "nova"), 2200);
+  setTimeout(() => addMessage("Just start where your head is at.", "nova"), 3200);
 }
+
+initialPresence();
 
 async function send() {
-  const value = input.value.trim();
-  if (!value) return;
+  const input = document.getElementById("input");
+  const text = input.value.trim();
+  if (!text) return;
 
-  addUser(value);
+  addMessage("> " + text, "user");
   input.value = "";
 
-  if (state.phase === "intro") {
-    state.goal = value;
+  const res = await fetch("/api/nova", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text })
+  });
 
-    await type("Got it.");
-    await type("Let me understand this properly...");
-    await type("What’s the main thing slowing you down right now?");
+  const data = await res.json();
 
-    state.phase = "constraint";
-    return;
-  }
-
-  if (state.phase === "constraint") {
-    state.constraint = value;
-
-    await type("Processing...");
-
-    const res = await fetch('/api/nova', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        goal: state.goal,
-        constraint: state.constraint
-      })
-    });
-
-    const data = await res.json();
-
-    await type(data.message);
-    await type(data.next);
-
-    state.phase = "active";
-    return;
-  }
-
-  if (state.phase === "active") {
-    await fetch('/api/nova', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: value,
-        goal: state.goal
-      })
-    });
-
-    await type("Continue.");
-  }
+  setTimeout(() => addMessage(data.reply, "nova"), 600);
 }
 
-// 🔥 FINAL PRESENCE SEQUENCE — NO EDITING REQUIRED
-(async () => {
-  await type("...");
-  await new Promise(r => setTimeout(r, 800));
-
-  await type("Hey.");
-  await new Promise(r => setTimeout(r, 400));
-
-  await type("I’ve got you.");
-  await new Promise(r => setTimeout(r, 500));
-
-  await type("You don’t need to explain everything perfectly.");
-  await new Promise(r => setTimeout(r, 500));
-
-  await type("Just start where your head is at.");
-})();
 </script>
 
 </body>
