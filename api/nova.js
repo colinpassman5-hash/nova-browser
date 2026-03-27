@@ -22,8 +22,9 @@ export default async function handler(req, res) {
 
   if (!message) {
     return res.status(200).json({
-      reply: "I’m here. Start anywhere you like.",
-      headerSub: "Soft entry. Real conversation."
+      reply: "I’m Nova. Bring me the real thing.",
+      headerSub: "A live intelligence surface.",
+      heroSub: "Start anywhere. Nova should know what it is, what it can do, and how to meet you without making you perform first."
     });
   }
 
@@ -32,17 +33,23 @@ export default async function handler(req, res) {
   const asksIdentity =
     lower.includes("who are you") ||
     lower.includes("what are you") ||
-    lower.includes("what is this") ||
-    lower.includes("what is nova");
+    lower.includes("what is nova") ||
+    lower.includes("what is this");
+
+  const asksCapabilities =
+    lower.includes("what can you do") ||
+    lower.includes("what do you do") ||
+    lower.includes("how can you help") ||
+    lower.includes("what are your capabilities");
 
   const frustration =
-    /(fuck|fucking|shit|bullshit|dumb|stupid|garbage|hate|retarded|insane|broken)/i.test(lower);
+    /(fuck|fucking|shit|bullshit|dumb|stupid|garbage|broken|retarded|insane|useless)/i.test(lower);
 
   const uncertainty =
-    /(confused|unclear|lost|not sure|don't know|dont know|overwhelmed|messy|tangled|scattered)/i.test(lower);
+    /(confused|unclear|lost|not sure|don't know|dont know|messy|scattered|overwhelmed|tangled)/i.test(lower);
 
-  const groundedBuild =
-    /(build|product|system|engineering|physics|real world|stress test|solid|ship|launch|architecture)/i.test(lower);
+  const realSystems =
+    /(real world|stress test|stress tested|engineering|physics|solid|product|build|system|ship|launch|architecture|rigorous|rigor)/i.test(lower);
 
   const greeting =
     /^(hi|hello|hey|yo|sup|good morning|good evening)\b/i.test(lower);
@@ -50,68 +57,139 @@ export default async function handler(req, res) {
   const shortInput = message.length < 18;
 
   let reply = "";
-  let headerSub = "Still with you.";
+  let headerSub = "A live intelligence surface.";
+  let heroSub = "Start anywhere. Nova should know what it is, what it can do, and how to meet you without making you perform first.";
 
   if (asksIdentity) {
     reply =
 `I’m Nova.
 
-Not a cold form. Not a dead script.
+I’m a live intelligence surface built to think with you, pressure-test ideas, expose weak structure, reduce friction, and move vague ambition toward something real.
 
-This is a place where you can bring raw thought, half-built ideas, pressure, ambition, or confusion without having to clean yourself up first.
+You are not supposed to guess what I am.
+You can use me to:
+- clarify confused thinking
+- sharpen a goal
+- find the true bottleneck
+- design a system
+- challenge weak assumptions
+- turn loose ideas into executable structure
 
-We take what is true, reduce friction, and move it toward something real.`;
+You can bring me the polished version if you want.
+But I’m more useful when you bring me the real one.`;
+
     headerSub = "Identity anchored.";
+    heroSub = "Nova is for clarity, system design, pressure-testing, and moving vague intent toward real structure.";
+  } else if (asksCapabilities) {
+    reply =
+`Right now, I can do five things for you very well.
+
+1. Find the real signal inside messy thinking.
+2. Expose the pressure point that is actually stalling progress.
+3. Turn a vague idea into a clearer system or plan.
+4. Challenge weak logic, fake confidence, and soft spots in the structure.
+5. Help shape something into a product or operating model that can survive contact with reality.
+
+What I should never make you do is guess what to ask first.
+So start simple:
+tell me what you're trying to build, understand, fix, or survive.`;
+
+    headerSub = "Capabilities clarified.";
+    heroSub = "Nova is here to clarify, pressure-test, structure, and sharpen what matters.";
   } else if (frustration) {
     reply =
-`Fair.
+`Good.
 
-If it feels broken, say it straight. I’d rather get the honest signal than a polite lie.
+That gives me real signal instead of polite noise.
 
-Give me the exact failure in plain language, and I’ll work that layer directly.`;
+If something feels off, say exactly what layer is failing:
+the intelligence,
+the clarity,
+the direction,
+the trust,
+or the interface.
+
+I can do more with the honest wound than a fake compliment.`;
+
     headerSub = "Receiving honest signal.";
-  } else if (uncertainty) {
-    reply =
-`That’s a good place to start.
-
-Don’t force clarity before it arrives.
-
-Tell me the messy version: what are you trying to do, and what part of it feels unstable or hard to trust?`;
-    headerSub = "Holding uncertainty without forcing it.";
-  } else if (groundedBuild) {
+    heroSub = "Direct signal is better than fake smoothness. Nova should use friction as information.";
+  } else if (realSystems) {
     reply =
 `Yes.
 
-We can build real systems here in the sense that we can design them, pressure-test the logic, harden the interaction, and move them toward actual engineering discipline instead of fantasy.
+We can build toward real systems here, but only if we stay honest about the difference between elegant thinking and verified reality.
 
-The honest limit is this: ideas become truly stress-tested when they meet real users, real environments, and repeated failure loops.
+What can happen here:
+- system design
+- architecture shaping
+- failure analysis
+- logic hardening
+- pre-mortems
+- bottleneck discovery
+- product framing
+- stress-testing assumptions
 
-If you want, bring me the system exactly as it is, and we’ll identify what has to be made rigorous first.`;
+What reality still requires later:
+- actual users
+- actual environments
+- repeated failure loops
+- observed behavior under pressure
+
+So yes — we can absolutely build something more rigorous here.
+But the path to something real begins with naming the system and the first place it can break.`;
+
     headerSub = "Grounding ambition in reality.";
+    heroSub = "Nova should help design real systems by exposing failure paths before reality does.";
+  } else if (uncertainty) {
+    reply =
+`That’s workable.
+
+You do not need clarity before you begin.
+You need enough honesty for me to catch the shape of the thing.
+
+Give me the messy version:
+what are you trying to do,
+and what part of it feels unstable, foggy, or hard to trust?`;
+
+    headerSub = "Holding uncertainty without flattening it.";
+    heroSub = "Nova should reduce confusion without forcing fake certainty too early.";
   } else if (greeting) {
     reply =
 `Hey.
 
-No ceremony needed.
+You can come in lightly if you want.
 
-What’s been sitting on your mind lately?`;
+Ask me what I am, what I can do, or just tell me what has your attention right now.`;
+
     headerSub = "Warm entry.";
+    heroSub = "No ceremony. No performance. Start where the thought is actually alive.";
   } else if (shortInput) {
     reply =
-`Stay with it a second longer.
+`Stay with it one beat longer.
 
-Give me just a little more than that — enough for me to feel the shape of what’s real for you right now.`;
-    headerSub = "Pulling for more signal.";
+That’s not enough signal yet.
+Give me just a little more — enough for me to feel the shape of what’s real for you right now.`;
+
+    headerSub = "Pulling for stronger signal.";
+    heroSub = "Nova should not fake understanding when the signal is still too thin.";
   } else {
     reply =
 `I’m with you.
 
-Now go one layer deeper: what is the real pressure point inside this for you — the thing that makes it matter, stall, or demand action right now?`;
-    headerSub = "Going deeper, gently.";
+Now let’s go one layer deeper.
+
+Inside what you just said, what is the true pressure point?
+The part that makes this matter,
+stall,
+or demand action right now?`;
+
+    headerSub = "Tracking the real pressure point.";
+    heroSub = "Nova should move past surface description and find the force that actually matters.";
   }
 
   return res.status(200).json({
     reply,
-    headerSub
+    headerSub,
+    heroSub
   });
 }
