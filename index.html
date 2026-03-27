@@ -1,129 +1,193 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NOVA</title>
+<title>NOVA Intelligence</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  background: #000;
-  overflow: hidden;
-  font-family: -apple-system, sans-serif;
-  color: white;
+:root{
+  --bg:#05070d;
+  --glass: rgba(255,255,255,0.06);
+  --glass2: rgba(255,255,255,0.10);
+  --text:#e8eefc;
+  --muted:rgba(232,238,252,0.6);
+  --accent:#6aa9ff;
+  --glow: rgba(106,169,255,0.35);
 }
 
-/* CORE FIELD */
-#field {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  background: radial-gradient(1200px 800px at 50% 30%, #0b1430 0%, var(--bg) 60%, #000 100%);
+  color:var(--text);
+  overflow:hidden;
 }
 
-/* ENERGY LAYER */
-#orb {
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(0,150,255,0.6), transparent 70%);
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  filter: blur(40px);
-  animation: pulse 4s infinite ease-in-out;
+/* ambient field */
+.bg-orb{
+  position:absolute;
+  width:600px;
+  height:600px;
+  border-radius:50%;
+  background: radial-gradient(circle, var(--glow), transparent 60%);
+  filter: blur(60px);
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  animation: breathe 8s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
+@keyframes breathe{
+  0%,100%{ transform:translate(-50%,-50%) scale(0.9); opacity:0.5;}
+  50%{ transform:translate(-50%,-50%) scale(1.15); opacity:0.9;}
 }
 
-/* TEXT PRESENCE */
-#output {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  top: 60%;
-  font-size: 18px;
-  letter-spacing: 0.5px;
-  opacity: 0.9;
+/* main layout */
+.container{
+  position:relative;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:24px;
+  padding:20px;
 }
 
-/* INPUT FLOATING */
-#input {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  padding: 16px;
-  border-radius: 30px;
-  border: none;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-  color: white;
-  outline: none;
-  text-align: center;
+/* title */
+.title{
+  font-size:14px;
+  letter-spacing:0.3em;
+  color:var(--muted);
+  text-transform:uppercase;
 }
 
-/* CURSOR GLOW */
-#cursorGlow {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(0,150,255,0.2), transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
+/* output panel */
+.output{
+  width:min(720px, 90vw);
+  min-height:120px;
+  padding:24px;
+  border-radius:20px;
+  background:linear-gradient(180deg, var(--glass), transparent);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 80px rgba(0,0,0,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:18px;
+  line-height:1.5;
+  transition: all 0.3s ease;
 }
 
+/* input bar */
+.input-wrap{
+  width:min(720px, 90vw);
+  display:flex;
+  gap:12px;
+  padding:14px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+input{
+  flex:1;
+  border:none;
+  outline:none;
+  background:transparent;
+  color:var(--text);
+  font-size:15px;
+}
+
+button{
+  border:none;
+  padding:10px 18px;
+  border-radius:999px;
+  background: linear-gradient(135deg, var(--accent), #3d7dff);
+  color:white;
+  cursor:pointer;
+  font-weight:500;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover{
+  transform: translateY(-1px);
+  opacity:0.95;
+}
+
+/* subtle motion grain */
+.noise{
+  position:absolute;
+  inset:0;
+  background-image:url("https://www.transparenttextures.com/patterns/noise.png");
+  opacity:0.03;
+  pointer-events:none;
+}
 </style>
 </head>
 
 <body>
 
-<div id="field">
-  <div id="orb"></div>
-  <div id="output">Nova is online.</div>
-  <input id="input" placeholder="Speak..." />
-  <div id="cursorGlow"></div>
+<div class="bg-orb"></div>
+<div class="noise"></div>
+
+<div class="container">
+
+  <div class="title">NOVA INTELLIGENCE</div>
+
+  <div id="output" class="output">
+    Nova is online.
+  </div>
+
+  <form id="form" class="input-wrap">
+    <input id="input" placeholder="Ask Nova..." autocomplete="off"/>
+    <button type="submit">Send</button>
+  </form>
+
 </div>
 
 <script>
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const output = document.getElementById("output");
 
-// CURSOR INTERACTION (FEELS ALIVE)
-document.addEventListener("mousemove", e => {
-  const glow = document.getElementById("cursorGlow");
-  glow.style.left = e.clientX + "px";
-  glow.style.top = e.clientY + "px";
-});
+async function send(message){
+  output.innerText = "Thinking...";
 
-// INPUT HANDLER
-document.getElementById("input").addEventListener("keydown", async (e) => {
-  if (e.key === "Enter") {
-    const text = e.target.value.trim();
-    if (!text) return;
-
-    document.getElementById("output").innerText = "Processing...";
-    e.target.value = "";
-
+  try{
     const res = await fetch("/api/nova", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text })
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ message })
     });
 
     const data = await res.json();
-
-    setTimeout(() => {
-      document.getElementById("output").innerText = data.reply;
-    }, 400);
+    output.innerText = data.reply || "No response.";
+  }catch(err){
+    output.innerText = "Connection error.";
   }
-});
+}
 
+form.addEventListener("submit", (e)=>{
+  e.preventDefault();
+
+  const msg = input.value.trim();
+  if(!msg) return;
+
+  input.value = "";
+  send(msg);
+});
 </script>
 
 </body>
