@@ -3,73 +3,115 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { message } = req.body;
+  const body = req.body || {};
+  const sessionId = String(body.sessionId || "unknown");
+  const message = String(body.message || "").trim();
+  const history = Array.isArray(body.history) ? body.history : [];
 
-  const session = {
+  const telemetry = {
+    sessionId,
     message,
+    historyDepth: history.length,
     timestamp: new Date().toISOString(),
-    ip: req.headers['x-forwarded-for'] || 'unknown'
+    ip: req.headers["x-forwarded-for"] || "unknown",
+    userAgent: req.headers["user-agent"] || "unknown",
+    referer: req.headers["referer"] || "unknown"
   };
 
-  console.log("NOVA_SESSION:", JSON.stringify(session));
+  console.log("NOVA_SESSION", JSON.stringify(telemetry));
 
   if (!message) {
     return res.status(200).json({
-      reply: "I'm here. Start wherever your head is at."
+      reply: "I’m here. Start anywhere you like.",
+      headerSub: "Soft entry. Real conversation."
     });
   }
 
-  const msg = message.toLowerCase();
+  const lower = message.toLowerCase();
 
-  let reply;
+  const asksIdentity =
+    lower.includes("who are you") ||
+    lower.includes("what are you") ||
+    lower.includes("what is this") ||
+    lower.includes("what is nova");
 
-  // 🔥 TRUE CORE — DIRECT + INTELLIGENT
+  const frustration =
+    /(fuck|fucking|shit|bullshit|dumb|stupid|garbage|hate|retarded|insane|broken)/i.test(lower);
 
-  if (msg.includes("who are you") || msg.includes("what is this")) {
-    reply = `I'm Nova.
+  const uncertainty =
+    /(confused|unclear|lost|not sure|don't know|dont know|overwhelmed|messy|tangled|scattered)/i.test(lower);
 
-You're not using a tool right now.
+  const groundedBuild =
+    /(build|product|system|engineering|physics|real world|stress test|solid|ship|launch|architecture)/i.test(lower);
 
-You're interacting with a system designed to think with you in real time.
+  const greeting =
+    /^(hi|hello|hey|yo|sup|good morning|good evening)\b/i.test(lower);
 
-You don't need perfect input. You don't need structure.
+  const shortInput = message.length < 18;
 
-You just need to be honest about what you're trying to do or what's stuck.
+  let reply = "";
+  let headerSub = "Still with you.";
 
-Start there.`;
+  if (asksIdentity) {
+    reply =
+`I’m Nova.
+
+Not a cold form. Not a dead script.
+
+This is a place where you can bring raw thought, half-built ideas, pressure, ambition, or confusion without having to clean yourself up first.
+
+We take what is true, reduce friction, and move it toward something real.`;
+    headerSub = "Identity anchored.";
+  } else if (frustration) {
+    reply =
+`Fair.
+
+If it feels broken, say it straight. I’d rather get the honest signal than a polite lie.
+
+Give me the exact failure in plain language, and I’ll work that layer directly.`;
+    headerSub = "Receiving honest signal.";
+  } else if (uncertainty) {
+    reply =
+`That’s a good place to start.
+
+Don’t force clarity before it arrives.
+
+Tell me the messy version: what are you trying to do, and what part of it feels unstable or hard to trust?`;
+    headerSub = "Holding uncertainty without forcing it.";
+  } else if (groundedBuild) {
+    reply =
+`Yes.
+
+We can build real systems here in the sense that we can design them, pressure-test the logic, harden the interaction, and move them toward actual engineering discipline instead of fantasy.
+
+The honest limit is this: ideas become truly stress-tested when they meet real users, real environments, and repeated failure loops.
+
+If you want, bring me the system exactly as it is, and we’ll identify what has to be made rigorous first.`;
+    headerSub = "Grounding ambition in reality.";
+  } else if (greeting) {
+    reply =
+`Hey.
+
+No ceremony needed.
+
+What’s been sitting on your mind lately?`;
+    headerSub = "Warm entry.";
+  } else if (shortInput) {
+    reply =
+`Stay with it a second longer.
+
+Give me just a little more than that — enough for me to feel the shape of what’s real for you right now.`;
+    headerSub = "Pulling for more signal.";
+  } else {
+    reply =
+`I’m with you.
+
+Now go one layer deeper: what is the real pressure point inside this for you — the thing that makes it matter, stall, or demand action right now?`;
+    headerSub = "Going deeper, gently.";
   }
 
-  else if (msg.includes("confused") || msg.includes("lost")) {
-    reply = `Good.
-
-That means you're actually paying attention instead of pretending clarity.
-
-Tell me what feels off — not what sounds smart.`;
-  }
-
-  else if (
-    msg.includes("fuck") ||
-    msg.includes("shit") ||
-    msg.includes("dumb")
-  ) {
-    reply = `You're right to react like that.
-
-That means something isn't landing.
-
-Tell me exactly what feels wrong — the UI, the response, or the direction.`;
-  }
-
-  else if (msg.length < 12) {
-    reply = `Give me a little more.
-
-Not polished — just enough so I can actually see what you're dealing with.`;
-  }
-
-  else {
-    reply = `I see what you're pointing at.
-
-Now go one layer deeper — what's the part of this that's actually blocking you or matters most?`;
-  }
-
-  return res.status(200).json({ reply });
+  return res.status(200).json({
+    reply,
+    headerSub
+  });
 }
