@@ -9,24 +9,20 @@
   <title>NOVA</title>
   <style>
     :root {
-      --bg-top: #0e1726;
-      --bg-bottom: #071019;
-      --panel: rgba(255, 255, 255, 0.06);
-      --panel-strong: rgba(255, 255, 255, 0.09);
-      --border: rgba(255, 255, 255, 0.10);
-      --text: #f3f6fb;
-      --muted: rgba(243, 246, 251, 0.68);
-      --soft: rgba(243, 246, 251, 0.44);
-      --accent: #b7e1ff;
-      --accent-2: #d7f2ff;
-      --user: rgba(160, 206, 255, 0.14);
-      --nova: rgba(255, 255, 255, 0.05);
-      --shadow: 0 18px 60px rgba(0, 0, 0, 0.34);
-      --radius-xl: 26px;
-      --radius-lg: 20px;
-      --radius-md: 16px;
-      --content-max: 920px;
-      --composer-h: 132px;
+      --bg-0: #04070c;
+      --bg-1: #09111c;
+      --bg-2: #0d1826;
+      --text: rgba(241, 247, 255, 0.96);
+      --muted: rgba(241, 247, 255, 0.62);
+      --soft: rgba(241, 247, 255, 0.38);
+      --glass: rgba(255,255,255,0.05);
+      --glass-2: rgba(255,255,255,0.08);
+      --accent: rgba(150, 215, 255, 0.92);
+      --accent-soft: rgba(150, 215, 255, 0.18);
+      --user: rgba(158, 210, 255, 0.12);
+      --nova: rgba(255,255,255,0.045);
+      --max: 1040px;
+      --composer-pad: 180px;
     }
 
     * {
@@ -42,9 +38,10 @@
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at 20% 12%, rgba(164, 210, 255, 0.12), transparent 24%),
-        radial-gradient(circle at 80% 10%, rgba(214, 242, 255, 0.08), transparent 22%),
-        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+        radial-gradient(circle at 22% 18%, rgba(151, 214, 255, 0.13), transparent 20%),
+        radial-gradient(circle at 78% 14%, rgba(151, 214, 255, 0.08), transparent 16%),
+        radial-gradient(circle at 50% 60%, rgba(151, 214, 255, 0.05), transparent 28%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 42%, var(--bg-0));
     }
 
     body::before {
@@ -53,11 +50,37 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: radial-gradient(circle at center, black 38%, transparent 86%);
-      opacity: 0.55;
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 50%),
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: auto, 46px 46px, 46px 46px;
+      mask-image: radial-gradient(circle at center, black 34%, transparent 86%);
+      opacity: 0.85;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      width: 46vw;
+      height: 46vw;
+      min-width: 320px;
+      min-height: 320px;
+      max-width: 680px;
+      max-height: 680px;
+      left: 50%;
+      top: 44%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(151,214,255,0.16), rgba(151,214,255,0.06) 28%, transparent 68%);
+      filter: blur(38px);
+      opacity: 0.9;
+      animation: breathe 10s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: translate(-50%, -50%) scale(0.96); opacity: 0.82; }
+      50% { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
     }
 
     #app {
@@ -72,19 +95,15 @@
 
     .topbar {
       flex: 0 0 auto;
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      padding: 18px 20px 10px;
     }
 
     .topbar-inner {
-      width: min(100%, var(--content-max));
+      width: min(100%, var(--max));
       margin: 0 auto;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       gap: 16px;
     }
 
@@ -96,32 +115,70 @@
     }
 
     .brand-orb {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff, var(--accent-2) 28%, #9ccfff 60%, transparent 80%);
-      box-shadow: 0 0 22px rgba(183, 225, 255, 0.42);
+      background: radial-gradient(circle at 35% 35%, white, rgba(215,242,255,0.96) 34%, rgba(151,214,255,0.74) 62%, transparent 88%);
+      box-shadow: 0 0 20px rgba(151,214,255,0.45);
       flex: 0 0 auto;
     }
 
     .brand-copy strong {
       display: block;
       font-size: 14px;
+      letter-spacing: 0.24em;
       font-weight: 700;
-      letter-spacing: 0.18em;
     }
 
     .brand-copy span {
       display: block;
+      margin-top: 2px;
       font-size: 12px;
       color: var(--muted);
-      margin-top: 2px;
     }
 
-    .status {
+    .session {
       font-size: 12px;
-      color: var(--muted);
+      color: var(--soft);
       white-space: nowrap;
+    }
+
+    .hero {
+      flex: 0 0 auto;
+      padding: 8px 20px 0;
+    }
+
+    .hero-inner {
+      width: min(100%, 880px);
+      margin: 0 auto;
+      text-align: center;
+      padding: 18px 0 8px;
+    }
+
+    .hero-kicker {
+      color: var(--soft);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      font-weight: 700;
+      margin: 0;
+      text-wrap: balance;
+    }
+
+    .hero-sub {
+      width: min(100%, 720px);
+      margin: 16px auto 0;
+      color: var(--muted);
+      font-size: clamp(15px, 2vw, 18px);
+      line-height: 1.55;
+      text-wrap: balance;
     }
 
     .feed-wrap {
@@ -134,51 +191,68 @@
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 22px 18px calc(var(--composer-h) + 28px);
+      padding: 14px 20px var(--composer-pad);
       scroll-behavior: smooth;
       overscroll-behavior: contain;
     }
 
     .feed-inner {
-      width: min(100%, var(--content-max));
+      width: min(100%, 980px);
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       min-height: 100%;
     }
 
     .system {
       align-self: center;
+      padding: 6px 0;
       color: var(--soft);
       font-size: 11px;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      padding: 4px 0;
     }
 
     .message {
-      max-width: min(100%, 760px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      animation: rise 220ms ease;
-      overflow: hidden;
-    }
-
-    .message.nova {
-      align-self: flex-start;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
-        var(--nova);
+      max-width: min(88%, 800px);
+      position: relative;
+      animation: rise 260ms ease;
     }
 
     .message.user {
       align-self: flex-end;
+    }
+
+    .message.nova {
+      align-self: flex-start;
+    }
+
+    .message-shell {
+      position: relative;
+      padding: 14px 16px 15px;
+      border-radius: 26px;
+      backdrop-filter: blur(18px) saturate(135%);
+      -webkit-backdrop-filter: blur(18px) saturate(135%);
+      overflow: hidden;
+    }
+
+    .message.user .message-shell {
       background:
-        linear-gradient(180deg, rgba(183,225,255,0.12), rgba(183,225,255,0.05)),
+        linear-gradient(180deg, rgba(151,214,255,0.16), rgba(151,214,255,0.06)),
         var(--user);
-      border-color: rgba(183,225,255,0.18);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 10px 36px rgba(0,0,0,0.16);
+    }
+
+    .message.nova .message-shell {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+        var(--nova);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 10px 36px rgba(0,0,0,0.12);
     }
 
     .message-head {
@@ -186,71 +260,103 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 14px 16px 0;
+      margin-bottom: 8px;
     }
 
     .message-role {
+      color: var(--soft);
       font-size: 11px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--soft);
     }
 
     .message-time {
-      font-size: 11px;
       color: var(--soft);
+      font-size: 11px;
       white-space: nowrap;
     }
 
     .message-body {
-      padding: 8px 16px 16px;
       font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.62;
       white-space: pre-wrap;
       word-break: break-word;
+      text-wrap: pretty;
     }
 
     .typing {
       display: inline-flex;
-      align-items: center;
       gap: 6px;
-      padding: 2px 0;
+      align-items: center;
+      padding: 3px 0;
     }
 
     .typing span {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.72);
       animation: blink 1s infinite ease-in-out;
     }
 
     .typing span:nth-child(2) { animation-delay: 120ms; }
     .typing span:nth-child(3) { animation-delay: 240ms; }
 
-    .composer-shell {
+    .chips {
+      width: min(100%, 980px);
+      margin: 2px auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 10px 10px;
+    }
+
+    .chip {
+      appearance: none;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      color: var(--text);
+      background: rgba(255,255,255,0.045);
+      padding: 11px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      transition: transform 120ms ease, background 120ms ease;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+      background: rgba(151,214,255,0.10);
+    }
+
+    .composer-wrap {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 5;
-      padding: 14px 18px calc(14px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, rgba(7,16,25,0), rgba(7,16,25,0.78) 28%, rgba(7,16,25,0.98));
+      z-index: 6;
+      padding: 14px 20px calc(16px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(4,7,12,0), rgba(4,7,12,0.80) 28%, rgba(4,7,12,0.98));
       pointer-events: none;
     }
 
     .composer {
-      width: min(100%, var(--content-max));
+      width: min(100%, 980px);
       margin: 0 auto;
       pointer-events: auto;
-      border: 1px solid var(--border);
-      border-radius: 24px;
+      border-radius: 30px;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
-        rgba(9, 17, 28, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: var(--shadow);
+        rgba(8, 14, 22, 0.78);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 18px 60px rgba(0,0,0,0.28);
       overflow: hidden;
     }
 
@@ -267,8 +373,8 @@
       width: 100%;
       min-height: 78px;
       max-height: 180px;
-      resize: none;
       overflow-y: auto;
+      resize: none;
       margin: 0;
       padding: 0;
       border: none;
@@ -277,12 +383,12 @@
       color: var(--text);
       font: inherit;
       font-size: 17px;
-      line-height: 1.5;
+      line-height: 1.56;
       letter-spacing: -0.01em;
     }
 
     #input::placeholder {
-      color: rgba(243, 246, 251, 0.40);
+      color: rgba(241,247,255,0.42);
     }
 
     #send {
@@ -290,14 +396,14 @@
       border: none;
       outline: none;
       cursor: pointer;
-      width: 56px;
-      height: 56px;
+      width: 58px;
+      height: 58px;
       border-radius: 18px;
-      background: linear-gradient(135deg, #dff4ff, #aaceff);
-      color: #0a1320;
-      font-size: 22px;
+      background: linear-gradient(135deg, rgba(224,245,255,0.98), rgba(168,214,255,0.96));
+      color: #071019;
+      font-size: 24px;
       font-weight: 700;
-      box-shadow: 0 12px 30px rgba(183,225,255,0.22);
+      box-shadow: 0 10px 30px rgba(151,214,255,0.22);
       transition: transform 120ms ease, opacity 120ms ease;
     }
 
@@ -333,18 +439,7 @@
       height: 8px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 14px rgba(183,225,255,0.35);
-    }
-
-    @keyframes blink {
-      0%, 80%, 100% {
-        opacity: 0.35;
-        transform: scale(0.75);
-      }
-      40% {
-        opacity: 1;
-        transform: scale(1);
-      }
+      box-shadow: 0 0 14px rgba(151,214,255,0.36);
     }
 
     @keyframes rise {
@@ -358,20 +453,35 @@
       }
     }
 
-    @media (max-width: 640px) {
+    @keyframes blink {
+      0%, 80%, 100% {
+        opacity: 0.35;
+        transform: scale(0.75);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 720px) {
       :root {
-        --composer-h: 158px;
+        --composer-pad: 210px;
       }
 
       .topbar {
-        padding: 14px 14px 12px;
+        padding: 16px 14px 8px;
+      }
+
+      .hero {
+        padding: 6px 14px 0;
       }
 
       #feed {
-        padding: 18px 14px calc(var(--composer-h) + 24px);
+        padding: 10px 14px var(--composer-pad);
       }
 
-      .composer-shell {
+      .composer-wrap {
         padding: 10px 14px calc(12px + env(safe-area-inset-bottom));
       }
 
@@ -385,12 +495,24 @@
         border-radius: 14px;
       }
 
-      .status {
+      .message {
+        max-width: 100%;
+      }
+
+      .session {
         display: none;
+      }
+
+      .hero-title {
+        letter-spacing: -0.04em;
       }
 
       .message-body {
         font-size: 15px;
+      }
+
+      .chips {
+        justify-content: flex-start;
       }
     }
   </style>
@@ -403,12 +525,30 @@
           <div class="brand-orb"></div>
           <div class="brand-copy">
             <strong>NOVA</strong>
-            <span id="headerSub">By the creek. No rush. Start wherever you are.</span>
+            <span id="headerSub">A live intelligence surface.</span>
           </div>
         </div>
-        <div class="status" id="sessionText">Session waking up…</div>
+        <div class="session" id="sessionText">Session opening…</div>
       </div>
     </header>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-kicker">No interface. No performance. Just signal.</div>
+        <h1 class="hero-title">Bring Nova the real thing.</h1>
+        <div class="hero-sub" id="heroSub">
+          Bring the messy thought, the ambition, the confusion, the impossible product idea, the pressure.
+          Nova should know what it is, what it can do, and how to meet you without making you perform first.
+        </div>
+      </div>
+
+      <div class="chips">
+        <button class="chip" data-seed="What exactly are you, Nova?">What are you?</button>
+        <button class="chip" data-seed="What can you actually do for me right now?">What can you do?</button>
+        <button class="chip" data-seed="I want to build a real product that survives contact with reality.">Build something real</button>
+        <button class="chip" data-seed="My thinking is messy. Help me find the real signal.">Untangle my head</button>
+      </div>
+    </section>
 
     <div class="feed-wrap">
       <div id="feed">
@@ -416,7 +556,7 @@
       </div>
     </div>
 
-    <div class="composer-shell">
+    <div class="composer-wrap">
       <div class="composer">
         <div class="composer-top">
           <textarea
@@ -453,6 +593,7 @@
     const composerState = document.getElementById("composerState");
     const sessionText = document.getElementById("sessionText");
     const headerSub = document.getElementById("headerSub");
+    const heroSub = document.getElementById("heroSub");
 
     function makeId() {
       return "nova-" + Math.random().toString(36).slice(2, 10);
@@ -462,6 +603,10 @@
       return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     }
 
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     function autoGrow() {
       input.style.height = "auto";
       input.style.height = Math.min(input.scrollHeight, 180) + "px";
@@ -469,7 +614,7 @@
 
     function scrollToBottom(force = false) {
       requestAnimationFrame(() => {
-        const nearBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 120;
+        const nearBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 140;
         if (force || nearBottom) {
           feed.scrollTo({ top: feed.scrollHeight, behavior: "smooth" });
         }
@@ -488,6 +633,9 @@
       const wrap = document.createElement("article");
       wrap.className = "message " + role;
 
+      const shell = document.createElement("div");
+      shell.className = "message-shell";
+
       const head = document.createElement("div");
       head.className = "message-head";
 
@@ -505,8 +653,9 @@
 
       head.appendChild(roleEl);
       head.appendChild(timeEl);
-      wrap.appendChild(head);
-      wrap.appendChild(body);
+      shell.appendChild(head);
+      shell.appendChild(body);
+      wrap.appendChild(shell);
       feedInner.appendChild(wrap);
 
       state.messages.push({ role, text, time: new Date().toISOString() });
@@ -517,6 +666,9 @@
       const wrap = document.createElement("article");
       wrap.className = "message nova";
       wrap.id = "typing";
+
+      const shell = document.createElement("div");
+      shell.className = "message-shell";
 
       const head = document.createElement("div");
       head.className = "message-head";
@@ -535,8 +687,9 @@
 
       head.appendChild(roleEl);
       head.appendChild(timeEl);
-      wrap.appendChild(head);
-      wrap.appendChild(body);
+      shell.appendChild(head);
+      shell.appendChild(body);
+      wrap.appendChild(shell);
       feedInner.appendChild(wrap);
       scrollToBottom(true);
     }
@@ -547,14 +700,15 @@
     }
 
     async function welcome() {
-      addSystem("Presence settled");
-      await wait(260);
-      addMessage("nova", "Hey. Come sit a minute.");
-      headerSub.textContent = "Soft entry. Real conversation.";
-      await wait(420);
-      addMessage("nova", "You don’t need the perfect words here.");
-      await wait(480);
-      addMessage("nova", "Tell me what’s on your mind, what you’re building, or what feels tangled. We can start easy.");
+      addSystem("Presence active");
+      await wait(220);
+      addMessage("nova", "Hey.");
+      await wait(320);
+      addMessage("nova", "I’m Nova.");
+      await wait(440);
+      addMessage("nova", "Bring me the real thing — not the polished version.");
+      await wait(520);
+      addMessage("nova", "If you want a clean start, ask me what I am, what I can do, or bring me the pressure point that actually matters.");
       composerState.textContent = "Ready";
       input.focus();
     }
@@ -581,7 +735,7 @@
           body: JSON.stringify({
             sessionId: state.sessionId,
             message: text,
-            history: state.messages.slice(-10)
+            history: state.messages.slice(-12)
           })
         });
 
@@ -593,12 +747,13 @@
         }
 
         addMessage("nova", data.reply || "I’m here. Keep going.");
-        headerSub.textContent = data.headerSub || "Still with you.";
+        headerSub.textContent = data.headerSub || "A live intelligence surface.";
+        heroSub.textContent = data.heroSub || heroSub.textContent;
         composerState.textContent = "Ready";
         sessionText.textContent = "Live session · " + state.sessionId;
       } catch (err) {
         removeTyping();
-        addMessage("nova", "Something slipped in transit. The thread is still here. Send that again.");
+        addMessage("nova", "Something slipped in transit. The thread is still alive. Send that again.");
         headerSub.textContent = "Temporary interruption.";
         composerState.textContent = "Retry";
       } finally {
@@ -609,9 +764,13 @@
       }
     }
 
-    function wait(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    document.querySelectorAll(".chip").forEach(btn => {
+      btn.addEventListener("click", () => {
+        input.value = btn.dataset.seed || "";
+        autoGrow();
+        input.focus();
+      });
+    });
 
     input.addEventListener("input", autoGrow);
 
