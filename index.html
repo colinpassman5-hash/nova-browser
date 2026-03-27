@@ -5,167 +5,124 @@
 <title>NOVA</title>
 
 <style>
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
-  background: radial-gradient(circle at 50% 20%, #0a0f1f, #020308 70%);
-  color: #e6f0ff;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background: #000;
+  overflow: hidden;
+  font-family: -apple-system, sans-serif;
+  color: white;
+}
+
+/* CORE FIELD */
+#field {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
-/* Ambient glow */
-body::before {
-  content: "";
+/* ENERGY LAYER */
+#orb {
   position: absolute;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0,120,255,0.15), transparent 70%);
-  top: 20%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(0,150,255,0.6), transparent 70%);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(40px);
+  animation: pulse 4s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.6; }
+}
+
+/* TEXT PRESENCE */
+#output {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: 60%;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+
+/* INPUT FLOATING */
+#input {
+  position: absolute;
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  filter: blur(80px);
-}
-
-/* Container */
-#app {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-width: 800px;
-  margin: auto;
-  width: 90%;
-}
-
-/* Header */
-#header {
-  padding: 20px 0;
-  font-size: 14px;
-  letter-spacing: 2px;
-  color: rgba(180,200,255,0.6);
-}
-
-/* Conversation */
-#conversation {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 0;
-}
-
-/* Messages */
-.message {
-  margin: 14px 0;
-  line-height: 1.6;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeIn 0.4s ease forwards;
-}
-
-.user {
-  color: rgba(180,200,255,0.5);
-}
-
-.nova {
-  color: #ffffff;
-  text-shadow: 0 0 8px rgba(0,120,255,0.3);
-}
-
-/* Input */
-#inputBar {
-  display: flex;
-  margin: 20px 0;
-  gap: 10px;
-}
-
-input {
-  flex: 1;
+  width: 60%;
   padding: 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(10,15,30,0.6);
+  border-radius: 30px;
+  border: none;
+  background: rgba(255,255,255,0.05);
   backdrop-filter: blur(10px);
   color: white;
   outline: none;
+  text-align: center;
 }
 
-input:focus {
-  border: 1px solid rgba(0,120,255,0.6);
-  box-shadow: 0 0 12px rgba(0,120,255,0.3);
+/* CURSOR GLOW */
+#cursorGlow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(0,150,255,0.2), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
 }
 
-button {
-  padding: 16px 20px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(135deg, #0070ff, #00c6ff);
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(0,120,255,0.4);
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; transform: translateY(0); }
-}
 </style>
 </head>
 
 <body>
 
-<div id="app">
-  <div id="header">NOVA SYSTEM</div>
-
-  <div id="conversation"></div>
-
-  <div id="inputBar">
-    <input id="input" placeholder="Speak freely..." />
-    <button onclick="send()">→</button>
-  </div>
+<div id="field">
+  <div id="orb"></div>
+  <div id="output">Nova is online.</div>
+  <input id="input" placeholder="Speak..." />
+  <div id="cursorGlow"></div>
 </div>
 
 <script>
 
-function addMessage(text, type) {
-  const div = document.createElement("div");
-  div.className = "message " + type;
-  div.innerText = text;
-  document.getElementById("conversation").appendChild(div);
-  div.scrollIntoView({ behavior: "smooth" });
-}
+// CURSOR INTERACTION (FEELS ALIVE)
+document.addEventListener("mousemove", e => {
+  const glow = document.getElementById("cursorGlow");
+  glow.style.left = e.clientX + "px";
+  glow.style.top = e.clientY + "px";
+});
 
-// === PRESENCE (clean, not cringe) ===
-setTimeout(() => addMessage("Nova online.", "nova"), 400);
-setTimeout(() => addMessage("I'm here with you.", "nova"), 1200);
+// INPUT HANDLER
+document.getElementById("input").addEventListener("keydown", async (e) => {
+  if (e.key === "Enter") {
+    const text = e.target.value.trim();
+    if (!text) return;
 
-// === SEND ===
-async function send() {
-  const input = document.getElementById("input");
-  const text = input.value.trim();
-  if (!text) return;
+    document.getElementById("output").innerText = "Processing...";
+    e.target.value = "";
 
-  addMessage("> " + text, "user");
-  input.value = "";
+    const res = await fetch("/api/nova", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
 
-  const res = await fetch("/api/nova", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: text })
-  });
+    const data = await res.json();
 
-  const data = await res.json();
-
-  setTimeout(() => addMessage(data.reply, "nova"), 500);
-}
+    setTimeout(() => {
+      document.getElementById("output").innerText = data.reply;
+    }, 400);
+  }
+});
 
 </script>
 
