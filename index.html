@@ -184,12 +184,21 @@ async function send() {
   }
 }
 
-// OPENING SEQUENCE
+// 🔥 FINAL PRESENCE SEQUENCE — NO EDITING REQUIRED
 (async () => {
+  await type("...");
+  await new Promise(r => setTimeout(r, 800));
+
   await type("Hey.");
-  await type("I’m Nova.");
-  await type("You don’t need to structure anything.");
-  await type("Just tell me what you’re working on.");
+  await new Promise(r => setTimeout(r, 400));
+
+  await type("I’ve got you.");
+  await new Promise(r => setTimeout(r, 500));
+
+  await type("You don’t need to explain everything perfectly.");
+  await new Promise(r => setTimeout(r, 500));
+
+  await type("Just start where your head is at.");
 })();
 </script>
 
